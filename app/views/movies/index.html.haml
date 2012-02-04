@@ -4,7 +4,7 @@
 %table#movies
   %thead
     %tr
-      %th Movie Title
+      %th= link_to "Movie Title", movies_path, :sortTitle => true
       %th Rating
       %th Release Date
       %th More Info
