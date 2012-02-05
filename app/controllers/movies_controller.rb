@@ -12,6 +12,29 @@ class MoviesController < ApplicationController
     @checked = {}
     @sort_title = false
     @sort_release = false
+
+    if params.has_key?("commit") and (params["commit"] == "Refresh")
+      session[:ratings] = params[:ratings]
+    end
+    if params.has_key?(:sort_title) and not params.has_key?(:sort_release_date)
+      session[:sort_title] = params[:sort_title]
+      if session.has_key?(:sort_release_date)
+        session.delete(:sort_release_date)
+      end
+    end
+    if params.has_key?(:sort_release_date) and not params.has_key?(:sort_title)
+      session[:sort_release_date] = params[:sort_release_date]
+      if session.has_key?(:sort_title)
+        session.delete(:sort_title)
+      end
+    end
+    if params.has_key?(:sort_title) and params.has_key?(:sort_release_date)
+      session[:sort_title] = params[:sort_title]
+      session[:sort_release_date] = params[:sort_release_date]
+    end
+    puts "**SESSION**"
+    puts session
+    puts "**PARAMS**"
     puts params
     if params.has_key?(:ratings)
       @ratings = params[:ratings].keys
