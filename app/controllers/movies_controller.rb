@@ -10,22 +10,31 @@ class MoviesController < ApplicationController
     @all_ratings = ['G','PG','PG-13','R']
     @ratings = []
     @checked = {}
+    @sort_title = false
+    @sort_release = false
+    puts params
     if params.has_key?(:ratings)
       @ratings = params[:ratings].keys
       @checked = params[:ratings]
     end
-    if params.has_key?(:sort_title)
+    if (params.has_key?(:sort_title) and (params[:sort_title]=="true"))
       @movies = Movie.find(:all, :order=>"title ASC",:conditions => {:rating=>@ratings})
       @title_head_class = "hilite"
       @release_head_class = nil
-    elsif params.has_key?(:sort_release_date)
+      @sort_title = true
+      @sort_release = false
+    elsif ((params.has_key?(:sort_release_date)) and (params[:sort_release_date]=="true"))
       @movies = Movie.find(:all, :order=>"release_date ASC",:conditions => {:rating=>@ratings})
       @title_head_class = nil
       @release_head_class = "hilite"
+      @sort_title = false
+      @sort_release = true
     else
       @movies = Movie.find(:all, :conditions => {:rating=>@ratings})
       @title_head_class = nil
       @release_head_class = nil
+      @sort_title = false
+      @sort_release = false
     end
   end
 

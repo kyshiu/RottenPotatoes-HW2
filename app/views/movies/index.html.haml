@@ -5,13 +5,15 @@
   - @all_ratings.each do |rating|
     = rating
     = check_box_tag "ratings[#{rating}]",1,@checked.has_key?(rating), :class=>"ratings_#{rating}"
+  = hidden_field_tag 'sort_title', @sort_title
+  = hidden_field_tag 'sort_release_date', @sort_release
   = submit_tag 'Refresh', :class=>"ratings_submit"
 %table#movies
   %thead
     %tr
-      %th{:class=>[@title_head_class]}= link_to "Movie Title", movies_path(:sort_title => true), {:id => "title_header", :ratings = @checked}
+      %th{:class=>[@title_head_class]}= link_to "Movie Title", movies_path(:sort_title => true, :ratings => @checked), :id => "title_header"
       %th Rating
-      %th{:class=>[@release_head_class]}= link_to "Release Date", movies_path(:sort_release_date => true), {:id => "release_date_header", :ratings = @checked}
+      %th{:class=>[@release_head_class]}= link_to "Release Date", movies_path(:sort_release_date => true, :ratings => @checked), :id => "release_date_header"
       %th More Info
   %tbody
     - @movies.each do |movie|
