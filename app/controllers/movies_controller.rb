@@ -15,6 +15,25 @@ class MoviesController < ApplicationController
 
     if params.has_key?("commit") and (params["commit"] == "Refresh")
       session[:ratings] = params[:ratings]
+      if session[:ratings] == nil
+        session[:ratings] = {}
+      end
+    end
+    if params.has_key?(:ratings)
+      session[:ratings] = {} unless session.has_key?(:ratings)
+      more_keys = false
+      extra_keys = []
+      params[:ratings].each_key do |rating|
+        if not session[:ratings].has_key?(rating)
+          more_keys = true
+          extra_keys << rating
+        end
+      end
+      if more_keys
+        extra_keys.each do |rating|
+          session[:ratings][rating] = 1
+        end
+      end
     end
     if params.has_key?(:sort_title) and not params.has_key?(:sort_release_date)
       session[:sort_title] = params[:sort_title]
@@ -32,10 +51,47 @@ class MoviesController < ApplicationController
       session[:sort_title] = params[:sort_title]
       session[:sort_release_date] = params[:sort_release_date]
     end
-    puts "**SESSION**"
+    puts "**SESSION AFTER UPDATE**"
     puts session
     puts "**PARAMS**"
     puts params
+
+    more_keys = false
+    extra_keys = []
+    if params.has_key?(:ratings)
+      session[:ratings].each_key do |rating|
+        if not params[:ratings].has_key?(rating)
+          more_keys = true
+          extra_keys << rating
+        end
+      end
+    else
+      params[:ratings] = session[:ratings]
+    end
+    if more_keys
+      extra_keys.each do |rating|
+        params[:ratings][rating] = 1
+      end
+    end
+
+    more_sort = false
+    if not (params.has_key?(:sort_title) or params.has_key?(:sort_release_date))
+      if session.has_key?(:sort_title)
+        params[:sort_title] = session[:sort_title]
+        more_sort = true
+      end
+      if session.has_key?(:sort_release_date)
+        params[:sort_release_date] = session[:sort_release_date]
+        more_sort = true
+      end
+    end
+
+    if more_keys or more_sort
+      puts more_keys
+      puts more_sort
+      redirect_to movies_path(params)
+    end
+
     if params.has_key?(:ratings)
       @ratings = params[:ratings].keys
       @checked = params[:ratings]
