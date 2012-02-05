@@ -51,10 +51,6 @@ class MoviesController < ApplicationController
       session[:sort_title] = params[:sort_title]
       session[:sort_release_date] = params[:sort_release_date]
     end
-    puts "**SESSION AFTER UPDATE**"
-    puts session
-    puts "**PARAMS**"
-    puts params
 
     more_keys = false
     extra_keys = []
@@ -87,12 +83,10 @@ class MoviesController < ApplicationController
     end
 
     if more_keys or more_sort
-      puts more_keys
-      puts more_sort
       redirect_to movies_path(params)
     end
 
-    if params.has_key?(:ratings)
+    if params.has_key?(:ratings) and not params[:ratings] == nil
       @ratings = params[:ratings].keys
       @checked = params[:ratings]
     end
