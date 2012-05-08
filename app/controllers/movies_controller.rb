@@ -12,6 +12,8 @@ class MoviesController < ApplicationController
     @checked = {}
     @sort_title = false
     @sort_release = false
+	
+	@somethingdifferent = true
 
     if params.has_key?("commit") and (params["commit"] == "Refresh")
       session[:ratings] = params[:ratings]
